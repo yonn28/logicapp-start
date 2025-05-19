@@ -12,8 +12,8 @@ resource "azurerm_resource_group" "main" {
 # generalmente se configura después de crear el recurso,
 # ya sea en el portal de Azure o utilizando ARM templates/Bicep
 # para flujos más complejos. Aquí se define un trigger de recurrencia básico.
-resource "azurerm_logic_app_workflow" "vm_scheduler" {
-    name                = var.logic_app_name
+resource "azurerm_logic_app_workflow" "vm_scheduler_on" {
+    name                = var.logic_app_name_on
     location            = azurerm_resource_group.main.location
     resource_group_name = azurerm_resource_group.main.name
 
@@ -23,12 +23,19 @@ resource "azurerm_logic_app_workflow" "vm_scheduler" {
     
 }
 
-# Crea el recurso de Azure Communication Services
-resource "azurerm_communication_service" "notification_service" {
-  name                = var.communication_service_name
-  resource_group_name = azurerm_resource_group.main.name
-  data_location       = "United States" # Elige una ubicación de datos apropiada
+resource "azurerm_logic_app_workflow" "vm_scheduler_off" {
+    name                = var.logic_app_name_off
+    location            = azurerm_resource_group.main.location
+    resource_group_name = azurerm_resource_group.main.name
+
+    parameters = {}
+    workflow_schema = "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#"
+    workflow_version = "1.0.0.0"
+    
 }
+
+
+
 
 resource "azurerm_virtual_network" "main" {
   name                = "${var.resource_group_name}-vnet"
@@ -148,25 +155,7 @@ resource "random_pet" "prefix" {
   length = 1
 }
 
-# Salidas (opcional)
-output "logic_app_url" {
-  description = "La URL de la Azure Logic App."
-  value       = azurerm_logic_app_workflow.vm_scheduler.access_endpoint
-}
 
 
-output "communication_service_primary_connection_string" {
-  description = "La cadena de conexión primaria para Azure Communication Services."
-  value       = azurerm_communication_service.notification_service.primary_connection_string
-  sensitive   = true # Marca esto como sensible para no mostrarlo en la salida de apply
-}
 
-output "virtual_machine_name" {
-  description = "El nombre de la máquina virtual creada."
-  value       = azurerm_windows_virtual_machine.main.name
-}
 
-output "virtual_machine_public_ip" {
-  description = "La dirección IP pública de la máquina virtual."
-  value       = azurerm_public_ip.main.ip_address
-}

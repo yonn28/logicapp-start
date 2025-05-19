@@ -10,10 +10,15 @@ variable "location" {
   default     = "East US" # Puedes cambiar la región por defecto
 }
 
-variable "logic_app_name" {
+variable "logic_app_name_on" {
   description = "El nombre de la Azure Logic App."
   type        = string
-  default     = "logicapp-vm-scheduler" # Puedes cambiar el nombre por defecto
+  default     = "logicapp-vm-on" # Puedes cambiar el nombre por defecto
+}
+variable "logic_app_name_off" {
+  description = "El nombre de la Azure Logic App."
+  type        = string
+  default     = "logicapp-vm-off" # Puedes cambiar el nombre por defecto
 }
 
 variable "communication_service_name" {
