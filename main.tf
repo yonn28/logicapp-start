@@ -34,7 +34,11 @@ resource "azurerm_logic_app_workflow" "vm_scheduler_off" {
     
 }
 
-
+resource "azurerm_communication_service" "notification_service" {
+  name                = var.communication_service_name
+  resource_group_name = azurerm_resource_group.main.name
+  data_location       = "United States" # Elige una ubicación de datos apropiada
+}
 
 
 resource "azurerm_virtual_network" "main" {
